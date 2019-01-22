@@ -1,0 +1,35 @@
+{
+  "name": "ravelo",
+  "version": "0.0.1",
+  "description": "Just another framework",
+  "main": "index.js",
+  "scripts": {
+    "test": "lab",
+    "lint": "eslint *.js",
+    "test:tdd": "nodemon -x \"lab\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ravelo-systematic-solutions/ravelo.git"
+  },
+  "author": "Jesus Rodriguez<arturo@ravelo.ca>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ravelo-systematic-solutions/ravelo/issues"
+  },
+  "homepage": "https://github.com/ravelo-systematic-solutions/ravelo#readme",
+  "dependencies": {
+    "boom": "^7.3.0",
+    "good": "^8.1.2",
+    "hapi": "^18.0.0",
+    "hapi-router": "^4.0.0",
+    "joi": "^14.3.1"
+  },
+  "devDependencies": {
+    "code": "^5.2.4",
+    "eslint": "^5.12.1",
+    "lab": "^18.0.1",
+    "nock": "^10.0.6",
+    "nodemon": "^1.18.9"
+  }
+}

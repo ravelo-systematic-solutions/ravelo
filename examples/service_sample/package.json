@@ -1,0 +1,12 @@
+{
+  "name": "service_sample",
+  "version": "1.0.0",
+  "description": "Ravelo Service",
+  "main": "index.js",
+  "scripts": {},
+  "author": "Jesus Rodriguez<arturo@ravelo.ca>",
+  "license": "MIT",
+  "dependencies": {
+    "ravelo": "file:../.."
+  }
+}

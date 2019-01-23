@@ -63,3 +63,7 @@ typings/
 # IDEs
 .idea
 .vscode
+
+# config folders
+./config
+./examples/service_sample/config

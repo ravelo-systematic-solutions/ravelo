@@ -1,8 +1,9 @@
 const { expect } = require('code');
 const {  suite, test, before } = exports.lab = require('lab').script();
 const Nock = require('nock');
-// const libConfig = require('../conf/test');
+const Path = require('path');
 const ravelo = require('../../index');
+const Package = require('../../package');
 
 suite('ravelo.config', () => {
   suite('.getEnv', () => {
@@ -70,14 +71,27 @@ suite('ravelo.config', () => {
   });
 
   suite('.getRootDir', () => {
-    test('is null by default', () => {
-      expect(ravelo.config.getRootDir()).to.equal(null);
+    test('uses the application root by default', () => {
+      const root = Path.resolve(`${__dirname}/../..`);
+      // console.log(root)
+      expect(ravelo.config.getRootDir()).to.equal(root);
     });
 
     test('can be changed', () => {
+      const currentRootDir = ravelo.config.getRootDir();
       const dir = __dirname;
       ravelo.config.setRootDir(dir);
       expect(ravelo.config.getRootDir()).to.equal(dir);
+      ravelo.config.setRootDir(currentRootDir);
+    });
+
+  });
+
+  suite('.getConfigPath', () => {
+    test('retrieves the expected path', () => {
+      const root = Path.resolve(`${__dirname}/../..`);
+      console.log('root', root, ravelo.config.getConfigPath());
+      expect(ravelo.config.getConfigPath()).to.equal(`${root}/config/test.json`);
     });
   });
 
@@ -111,6 +125,14 @@ suite('ravelo.config', () => {
         test.fail('error should be thrown');
       } catch (e) {}
 
+    });
+
+  });
+
+  suite('.getPackageInfo', () => {
+
+    test('retrieves the package that belongs to the service', () => {
+      expect(ravelo.config.getPackageInfo()).to.equal(Package);
     });
 
   });

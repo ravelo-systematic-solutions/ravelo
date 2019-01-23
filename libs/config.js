@@ -1,4 +1,5 @@
 const Fs = require('fs');
+const Path = require('path');
 const Request = require('request-promise');
 const VALID_ENVS = ['production', 'development', 'local', 'test'];
 const DEFAULT_ENV = 'production';
@@ -97,7 +98,37 @@ const setRootDir = (dir) => {
  * @return String
  */
 const getRootDir = () => {
+
+  if(ROOT_DIR === null || ROOT_DIR === 'undefined' || !ROOT_DIR) {
+    ROOT_DIR = process.cwd();
+  }
+
   return ROOT_DIR;
+};
+
+/**
+ * Find the service package.
+ *
+ * This is important so we can pull information about each package
+ * in the ecosystem.
+ *
+ * @return Object found in the service's package.json
+ */
+const getPackageInfo = () => {
+  if ( ! Fs.existsSync(`${getRootDir()}/package.json`) ) {
+    throw Error(`package.json does not exist (${getRootDir()}/package.json)`);
+  }
+
+  return require(`${getRootDir()}/package.json`);
+};
+
+/**
+ * Returns the absolute path where to store the configuration files
+ *
+ * @return {string}
+ */
+const getConfigPath = () => {
+  return `${getRootDir()}/config/${getEnv()}.json`;
 };
 
 module.exports = {
@@ -106,5 +137,7 @@ module.exports = {
   getConfig,
   getRootDir,
   setRootDir,
+  getConfigPath,
+  getPackageInfo,
   getRegistryUrl
 };

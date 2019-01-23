@@ -1,23 +1,43 @@
 const Package = require('./package.json');
 const Hapi = require('hapi');
 const config = require('./libs/config');
-// const About = require('./controllers/about');
-// const Fs = require('fs');
 
 const init = async () => {
 
-  const NODE_ENV = process.env.NODE_ENV || 'production';
+  let registryConfig, serviceConfig;
+  const env = config.getEnv();
+  const filePath = config.getConfigPath();
+  const servicePck = config.getPackageInfo();
+
+  try {
+    let registryConfig = await config.getConfig(Package.name);
+    Fs.writeFileSync(filePath, JSON.stringify(registryConfig, null, 2));
+  } catch(e) {
+    if( !e.message.includes('ECONNREFUSED') ) {
+      // eslint-disable-next-line no-console
+      console.log(e.message);
+    }
+  }
+
+  try {
+    registryConfig = require(filePath);
+    serviceConfig = registryConfig[servicePck.name]
+  } catch(e) {
+    // eslint-disable-next-line no-console
+    console.log('Error: You need to configure either the config file or the registry service.');
+    process.exit(1);
+  }
 
   const server = Hapi.server({
-    port: 3000,
-    host: 'localhost',
-    debug: { "request": [ "error" ] }
+    port: serviceConfig.service.port,
+    host: serviceConfig.service.host,
+    debug: serviceConfig.debug
   });
 
   server.app.config = {
-    name: Package.name,
-    version: Package.version,
-    env: NODE_ENV
+    name: servicePck.name,
+    version: servicePck.version,
+    env
   };
 
   if (require.main === module) {
@@ -28,5 +48,5 @@ const init = async () => {
   return server;
 };
 
-module.exports = init();
+module.exports.init = init;
 module.exports.config = config;

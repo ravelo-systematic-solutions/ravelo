@@ -11,10 +11,18 @@ let rootDir = null;
  * @param dir
  * @throws Error if directory doesn't exist
  */
-const setRootDir = module.exports = (dir) => {
+module.exports.setRootDir = (dir) => {
   if ( ! Fs.existsSync(dir) ) {
     throw Error(`Base Dir does not exist (${dir})`);
   }
 
   rootDir = dir;
+};
+
+/**
+ * Retrieve
+ * @return String
+ */
+module.exports.getRootDir = () => {
+  return rootDir;
 };

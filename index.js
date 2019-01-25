@@ -1,5 +1,6 @@
 const Package = require('./package.json');
 const Hapi = require('hapi');
+const Fs = require('Fs');
 const config = require('./libs/config');
 const Plugins = require('./plugins');
 const About = require('./controllers/about');

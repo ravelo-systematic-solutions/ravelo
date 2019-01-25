@@ -59,6 +59,17 @@ jobs:
           name: Run unit tests
           command: npm test
 
+  run_coverage:
+    <<: *defaults
+    steps:
+      - restore_cache:
+          key: source-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+      - restore_cache:
+          key: dependencies-{{ checksum "package.json" }}
+      - run:
+          name: Run unit tests
+          command: npm codecov
+
 workflows:
   version: 2
   "Test, Audit":
@@ -71,5 +82,8 @@ workflows:
           requires:
             - install_dependencies
       - run_unit_tests:
+          requires:
+            - install_dependencies
+      - run_coverage:
           requires:
             - install_dependencies

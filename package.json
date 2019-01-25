@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "lab",
+    "codecov": "istanbul cover ./node_modules/lab/bin/lab --report lcovonly  -- -l  && codecov",
     "lint": "eslint *.js",
     "test:tdd": "nodemon -x \"lab\""
   },
@@ -37,7 +38,9 @@
   },
   "devDependencies": {
     "code": "^5.2.4",
+    "codecov": "^3.1.0",
     "eslint": "^5.12.1",
+    "istanbul": "^0.4.5",
     "lab": "^18.0.1",
     "nock": "^10.0.6",
     "nodemon": "^1.18.9"

@@ -1,8 +1,14 @@
 const Package = require('./package.json');
 const Hapi = require('hapi');
 const config = require('./libs/config');
+const Plugins = require('./plugins');
+const About = require('./controllers/about');
 
-const init = async () => {
+const init = async (options = {}) => {
+
+  const settings = Object.assign({
+    enableRaveloControllers: true
+  }, options);
 
   let registryConfig, serviceConfig;
   const env = config.getEnv();
@@ -39,6 +45,13 @@ const init = async () => {
     version: servicePck.version,
     env
   };
+
+  if(settings.enableRaveloControllers) {
+    // register ravelo controller actions
+    server.route(About);
+  }
+
+  await Plugins(server);
 
   if (require.main === module) {
     await server.start();

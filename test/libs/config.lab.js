@@ -73,7 +73,6 @@ suite('ravelo.config', () => {
   suite('.getRootDir', () => {
     test('uses the application root by default', () => {
       const root = Path.resolve(`${__dirname}/../..`);
-      // console.log(root)
       expect(ravelo.config.getRootDir()).to.equal(root);
     });
 
@@ -90,7 +89,6 @@ suite('ravelo.config', () => {
   suite('.getConfigPath', () => {
     test('retrieves the expected path', () => {
       const root = Path.resolve(`${__dirname}/../..`);
-      console.log('root', root, ravelo.config.getConfigPath());
       expect(ravelo.config.getConfigPath()).to.equal(`${root}/config/test.json`);
     });
   });

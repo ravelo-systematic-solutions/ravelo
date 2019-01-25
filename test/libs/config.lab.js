@@ -68,6 +68,10 @@ suite('ravelo.config', () => {
         ravelo.config.isEnvValid('invalid-env');
       }).to.throw(Error);
     });
+
+    test('returns true when an environment is valid', () => {
+      expect(ravelo.config.isEnvValid(process.env.NODE_ENV)).to.be.true;
+    });
   });
 
   suite('.getRootDir', () => {
@@ -79,9 +83,17 @@ suite('ravelo.config', () => {
     test('can be changed', () => {
       const currentRootDir = ravelo.config.getRootDir();
       const dir = __dirname;
+
       ravelo.config.setRootDir(dir);
+
       expect(ravelo.config.getRootDir()).to.equal(dir);
       ravelo.config.setRootDir(currentRootDir);
+    });
+
+    test('throws an error if dir does not exist', () => {
+      expect(() => {
+        ravelo.config.setRootDir('/invalid-dir');
+      }).to.throw(Error);
     });
 
   });
@@ -115,14 +127,6 @@ suite('ravelo.config', () => {
       test('contains expected options', ({ context }) => {
         expect(context.config).to.equal(context.sampleRegistryConfig);
       });
-    });
-
-    test('throws an error when API is not available', async () => {
-      try {
-        await ravelo.config.getConfig('test', 'some-service');
-        test.fail('error should be thrown');
-      } catch (e) {}
-
     });
 
   });

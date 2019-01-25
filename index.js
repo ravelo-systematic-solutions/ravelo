@@ -54,11 +54,6 @@ const init = async (options = {}) => {
 
   await Plugins(server);
 
-  if (require.main === module) {
-    await server.start();
-    server.log([], `Server running at: ${server.info.uri}`);
-  }
-
   return server;
 };
 

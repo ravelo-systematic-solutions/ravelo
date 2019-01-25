@@ -8,9 +8,9 @@ suite('About Controller Actions', () => {
   before(async () => {
     Server = await Ravelo.init();
   });
-  suite('/ GET returns', () => {
+  suite('/_service GET returns', () => {
     before( async ({ context }) => {
-      context.response = await Server.inject('/');
+      context.response = await Server.inject('/_service');
       context.payload = JSON.parse(context.response.payload || {});
     });
 

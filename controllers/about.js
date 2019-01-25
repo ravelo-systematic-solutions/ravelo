@@ -1,6 +1,6 @@
 const about = {
   method: 'GET',
-  path: '/',
+  path: '/_service',
   handler: (req) => {
     const {
       name,

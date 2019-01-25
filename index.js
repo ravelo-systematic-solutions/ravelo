@@ -7,7 +7,7 @@ const About = require('./controllers/about');
 const init = async (options = {}) => {
 
   const settings = Object.assign({
-    enableRaveloControllers: true
+    enableServiceControllers: true
   }, options);
 
   let registryConfig, serviceConfig;
@@ -46,7 +46,7 @@ const init = async (options = {}) => {
     env
   };
 
-  if(settings.enableRaveloControllers) {
+  if(settings.enableServiceControllers) {
     // register ravelo controller actions
     server.route(About);
   }

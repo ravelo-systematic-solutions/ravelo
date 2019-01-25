@@ -1,4 +1,4 @@
-const about = {
+const service = {
   method: 'GET',
   path: '/_service',
   handler: (req) => {
@@ -16,5 +16,5 @@ const about = {
 };
 
 module.exports = [
-  about
+  service
 ];

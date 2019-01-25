@@ -4,6 +4,15 @@
       "port": 3000,
       "host": "localhost"
     },
-    "debug": { "request": [ "error" ] }
+    "debug": { "request": [ "error" ] },
+    "internalURL": "http://localhost:3000"
+  },
+  "service-a": {
+    "service": {
+      "port": 3001,
+      "host": "localhost"
+    },
+    "debug": { "request": [ "error" ] },
+    "internalURL": "http://localhost:3001"
   }
 }

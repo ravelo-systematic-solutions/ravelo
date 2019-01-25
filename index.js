@@ -1,14 +1,16 @@
 const Package = require('./package.json');
 const Hapi = require('hapi');
-const Fs = require('Fs');
+const Fs = require('fs');
 const config = require('./libs/config');
 const Plugins = require('./plugins');
-const About = require('./controllers/about');
+const Service = require('./controllers/service');
+const Registry = require('./controllers/registry');
 
 const init = async (options = {}) => {
 
   const settings = Object.assign({
-    enableServiceControllers: true
+    enableServiceController: false,
+    enableRegistryController: false
   }, options);
 
   let registryConfig, serviceConfig;
@@ -34,7 +36,7 @@ const init = async (options = {}) => {
     process.exit(1);
   }
 
-  if (registryConfig.indexOf(servicePck.name) === -1) {
+  if ( !(servicePck.name in registryConfig) ) {
     // eslint-disable-next-line no-console
     console.log(`the ${servicePck.name} service config block was not found.`);
     process.exit(1);
@@ -54,9 +56,14 @@ const init = async (options = {}) => {
     env
   };
 
-  if(settings.enableServiceControllers) {
+  if(settings.enableServiceController) {
     // register ravelo controller actions
-    server.route(About);
+    server.route(Service);
+  }
+
+  if(settings.enableRegistryController) {
+    // register ravelo controller actions
+    server.route(Registry);
   }
 
   await Plugins(server);

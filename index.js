@@ -28,12 +28,19 @@ const init = async (options = {}) => {
 
   try {
     registryConfig = require(filePath);
-    serviceConfig = registryConfig[servicePck.name]
   } catch(e) {
     // eslint-disable-next-line no-console
     console.log('Error: You need to configure either the config file or the registry service.');
     process.exit(1);
   }
+
+  if (registryConfig.indexOf(servicePck.name) === -1) {
+    // eslint-disable-next-line no-console
+    console.log(`the ${servicePck.name} service config block was not found.`);
+    process.exit(1);
+  }
+
+  serviceConfig = registryConfig[servicePck.name];
 
   const server = Hapi.server({
     port: serviceConfig.service.port,

@@ -1,6 +1,6 @@
 const Request = require('request-promise');
 const config = require('../libs/config');
-const HttpError = require('../errors/HttpError');
+const HttpError = require('../errors/http-error');
 
 const getServiceResponse = async (serviceBlock) => {
 

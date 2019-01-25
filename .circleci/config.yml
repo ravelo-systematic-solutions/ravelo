@@ -68,7 +68,7 @@ jobs:
           key: dependencies-{{ checksum "package.json" }}
       - run:
           name: Run unit tests
-          command: npm codecov
+          command: npm run codecov
 
 workflows:
   version: 2

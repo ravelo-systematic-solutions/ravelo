@@ -1,0 +1,75 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+defaults: &defaults
+  working_directory: ~/repo
+  docker:
+    - image: circleci/node:10.7.0
+version: 2
+jobs:
+  checkout_code:
+    <<: *defaults
+    steps:
+      - restore_cache:
+          keys:
+            - source-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+            - source-{{ .Environment.CIRCLE_BRANCH }}-
+            - source-
+      - checkout
+      - save_cache:
+          key: source-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - "~/repo"
+
+  install_dependencies:
+    <<: *defaults
+    steps:
+      - restore_cache:
+          key: source-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+      - restore_cache:
+          key: dependencies-{{ checksum "package.json" }}
+      - run:
+          name: Install dependencies
+          command: npm install
+      - save_cache:
+          key: dependencies-{{ checksum "package.json" }}
+          paths:
+            - "~/repo"
+
+  run_audit_tests:
+    <<: *defaults
+    steps:
+      - restore_cache:
+          key: source-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+      - restore_cache:
+          key: dependencies-{{ checksum "package.json" }}
+      - run:
+          name: Run unit tests
+          command: npm audit
+
+  run_unit_tests:
+    <<: *defaults
+    steps:
+      - restore_cache:
+          key: source-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+      - restore_cache:
+          key: dependencies-{{ checksum "package.json" }}
+      - run:
+          name: Run unit tests
+          command: npm test
+
+workflows:
+  version: 2
+  "Build, Test & deploy to Dev":
+    jobs:
+      - checkout_code
+      - install_dependencies:
+          requires:
+            - checkout_code
+      - run_audit_tests:
+          requires:
+            - install_dependencies
+      - run_unit_tests:
+          requires:
+            - install_dependencies

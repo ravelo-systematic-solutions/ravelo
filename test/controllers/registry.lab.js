@@ -12,7 +12,7 @@ suite('Registry Controller Actions', () => {
       enableRegistryController: true
     });
   });
-  suite('GET /_registry/health returns', () => {
+  suite('GET /_registry/health upon successful request', () => {
     before( async ({ context }) => {
 
       for ( const serviceName in TestRegistrConfig ) {
@@ -31,12 +31,36 @@ suite('Registry Controller Actions', () => {
       context.payload = JSON.parse(context.response.payload || {});
     });
 
-    test.only('200 status code', async ({ context }) => {
+    test('returns 200 status code', async ({ context }) => {
       expect(context.response.statusCode).to.equal(200);
     });
 
-    // test('returns the health of each service', async ({ context }) => {
-    //   // expect(context.response.statusCode).to.equal(200);
-    // });
+    test('returns the health of each service', async ({ context }) => {
+      for ( const serviceName in TestRegistrConfig ) {
+        expect(context.payload[serviceName].statusCode).to.equal(200);
+      }
+    });
   });
+
+  test('does not break if a service is not running as expected', async () => {
+    const response = await Server.inject('/_registry/health');
+    const body = JSON.parse(response.payload || {});
+    expect(response.statusCode).to.equal(200);
+    expect(body['service-a'].statusCode).to.equal(503);
+  });
+
+  test('shows an error message if an application crashes', async () => {
+    const msg = 'something went wrong';
+    Nock(TestRegistrConfig['service-a'].internalURL)
+      .get('/_service')
+      .reply(500, {
+        description: msg
+      });
+    const response = await Server.inject('/_registry/health');
+    const body = JSON.parse(response.payload || {});
+    expect(response.statusCode).to.equal(200);
+    expect(body['service-a'].statusCode).to.equal(500);
+    expect(body['service-a'].description).to.equal(msg);
+  });
+
 });

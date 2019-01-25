@@ -1,6 +1,6 @@
 # Ravelo overview & motivation
 
-[![CircleCI](https://circleci.com/gh/ravelo-systematic-solutions/ravelo/tree/master.svg?style=svg)](https://circleci.com/gh/ravelo-systematic-solutions/ravelo/tree/master)
+[![CircleCI](https://circleci.com/gh/opposite-bracket/ravelo/tree/master.svg?style=svg)](https://circleci.com/gh/ravelo-systematic-solutions/ravelo/tree/master)
 
 My motivation for building this project is 
 so that i can build a framework that gives

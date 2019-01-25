@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "lab",
-    "codecov": "istanbul cover ./node_modules/lab/bin/lab --report lcovonly  -- -l  && codecov",
+    "codecov": "codecov",
     "lint": "eslint *.js",
     "test:tdd": "nodemon -x \"lab\""
   },

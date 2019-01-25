@@ -1,5 +1,4 @@
 const Fs = require('fs');
-const Path = require('path');
 const Request = require('request-promise');
 const VALID_ENVS = ['production', 'development', 'local', 'test'];
 const DEFAULT_ENV = 'production';

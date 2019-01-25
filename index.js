@@ -1,13 +1,16 @@
 const Package = require('./package.json');
 const Hapi = require('hapi');
+const Fs = require('fs');
 const config = require('./libs/config');
 const Plugins = require('./plugins');
-const About = require('./controllers/about');
+const Service = require('./controllers/service');
+const Registry = require('./controllers/registry');
 
 const init = async (options = {}) => {
 
   const settings = Object.assign({
-    enableServiceControllers: true
+    enableServiceController: false,
+    enableRegistryController: false
   }, options);
 
   let registryConfig, serviceConfig;
@@ -27,12 +30,19 @@ const init = async (options = {}) => {
 
   try {
     registryConfig = require(filePath);
-    serviceConfig = registryConfig[servicePck.name]
   } catch(e) {
     // eslint-disable-next-line no-console
     console.log('Error: You need to configure either the config file or the registry service.');
     process.exit(1);
   }
+
+  if ( !(servicePck.name in registryConfig) ) {
+    // eslint-disable-next-line no-console
+    console.log(`the ${servicePck.name} service config block was not found.`);
+    process.exit(1);
+  }
+
+  serviceConfig = registryConfig[servicePck.name];
 
   const server = Hapi.server({
     port: serviceConfig.service.port,
@@ -46,17 +56,17 @@ const init = async (options = {}) => {
     env
   };
 
-  if(settings.enableServiceControllers) {
+  if(settings.enableServiceController) {
     // register ravelo controller actions
-    server.route(About);
+    server.route(Service);
+  }
+
+  if(settings.enableRegistryController) {
+    // register ravelo controller actions
+    server.route(Registry);
   }
 
   await Plugins(server);
-
-  if (require.main === module) {
-    await server.start();
-    server.log([], `Server running at: ${server.info.uri}`);
-  }
 
   return server;
 };

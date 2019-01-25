@@ -3,12 +3,14 @@ const {  suite, test, before } = exports.lab = require('lab').script();
 const Ravelo = require('../../index');
 const Package = require('../../package');
 
-suite('About Controller Actions', () => {
+suite('Service Controller Actions', () => {
   let Server;
   before(async () => {
-    Server = await Ravelo.init();
+    Server = await Ravelo.init({
+      enableServiceController: true
+    });
   });
-  suite('/_service GET returns', () => {
+  suite('GET /_service returns', () => {
     before( async ({ context }) => {
       context.response = await Server.inject('/_service');
       context.payload = JSON.parse(context.response.payload || {});

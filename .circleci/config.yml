@@ -36,6 +36,9 @@ jobs:
           key: dependencies-{{ checksum "package.json" }}
           paths:
             - "~/repo"
+      - persist_to_workspace:
+          root: ~/repo
+          paths: .
 
   run_audit_tests:
     <<: *defaults
@@ -68,7 +71,7 @@ jobs:
           key: dependencies-{{ checksum "package.json" }}
       - run:
           name: Run unit tests
-          command: npm codecov
+          command: npm run codecov
 
 workflows:
   version: 2

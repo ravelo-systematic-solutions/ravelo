@@ -8,6 +8,13 @@
     "lint": "eslint *.js",
     "test:tdd": "nodemon -x \"lab\""
   },
+  "keywords": [
+    "framework",
+    "http",
+    "api",
+    "web",
+    "service"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ravelo-systematic-solutions/ravelo.git"

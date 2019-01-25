@@ -53,7 +53,41 @@ module.exports = init();
 the `Server` that `Ravelo.init()` returns is a hapijs
 server. For more information about which version of
 [hapi](https://hapijs.com/) we are using please refer to our
-[package.js](https://github.com/ravelo-systematic-solutions/ravelo/blob/master/package.json).
+[package.js](https://github.com/opposite-bracket/ravelo/blob/master/package.json).
+
+Next, create `config/local.json` and add the following:
+
+```json
+{
+  "service-name": {
+    "service": {
+      "port": 4000,
+      "host": "localhost"
+    }
+  }
+}
+```
+
+Bare in mind that you will need to replace `service-name`
+with the name you'll find in your `package.json`.
+
+The next thing you need to do is run it but make sure that
+you set the NODE_ENV environment variable to `local`:
+
+```jshelllanguage
+$ NODE_ENV=local node index.js
+```
+
+and visit [http://localhost:4000/_service](http://localhost:4000/_service).
+If everything went well, you should be able to see the following:
+
+```json
+{
+    "name": "service-name",
+    "version": "1.0.0",
+    "env": "local"
+}
+```
 
 ## Troubleshooting
 

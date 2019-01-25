@@ -36,6 +36,9 @@ jobs:
           key: dependencies-{{ checksum "package.json" }}
           paths:
             - "~/repo"
+      - persist_to_workspace:
+          root: ~/repo
+          paths: .
 
   run_audit_tests:
     <<: *defaults
@@ -70,6 +73,18 @@ jobs:
           name: Run unit tests
           command: npm run codecov
 
+  publish:
+    <<: *defaults
+    steps:
+    - attach_workspace:
+        at: ~/repo
+    - run:
+        name: Authenticate with registry
+        command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
+    - run:
+        name: Publish package
+        command: npm publish
+
 workflows:
   version: 2
   "Test, Audit":
@@ -87,3 +102,10 @@ workflows:
       - run_coverage:
           requires:
             - install_dependencies
+      - publish:
+          requires:
+            - run_audit_tests
+            - run_unit_tests
+          filter:
+            tags:
+              only: /^v.*/

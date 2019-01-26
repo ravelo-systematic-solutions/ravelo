@@ -19,7 +19,7 @@ const init = async (options = {}) => {
 
   try {
     let registryConfig = await config.getConfig(servicePck.name);
-    Fs.writeFileSync(filePath, JSON.stringify(registryConfig, null, 2));
+    Fs.writeFileSync(filePath, JSON.stringify({[servicePck.name]: registryConfig}, null, 2));
   } catch(e) {
     if( !e.message.includes('ECONNREFUSED') ) {
       // eslint-disable-next-line no-console

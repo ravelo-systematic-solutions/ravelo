@@ -72,7 +72,7 @@ Next, create `config/local.json` and add the following:
       "host": "localhost"
     },
     "debug": { "request": [ "error" ] },
-    "internalURL": "localhost:3000"
+    "internalURL": "http://localhost:3000"
   }
 }
 ```
@@ -131,7 +131,7 @@ and update the `config/local.json` to the following:
       "host": "localhost"
     },
     "debug": { "request": [ "error" ] },
-    "internalURL": "localhost:3000"
+    "internalURL": "http://localhost:3000"
   },
   "consumer-service": {
     "service": {
@@ -139,7 +139,7 @@ and update the `config/local.json` to the following:
       "host": "localhost"
     },
     "debug": { "request": [ "error" ] },
-    "internalURL": "localhost:3001"
+    "internalURL": "http://localhost:3001"
   }
 }
 ```

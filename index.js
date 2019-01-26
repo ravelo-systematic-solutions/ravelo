@@ -1,4 +1,3 @@
-const Package = require('./package.json');
 const Hapi = require('hapi');
 const Fs = require('fs');
 const config = require('./libs/config');
@@ -19,7 +18,7 @@ const init = async (options = {}) => {
   const servicePck = config.getPackageInfo();
 
   try {
-    let registryConfig = await config.getConfig(Package.name);
+    let registryConfig = await config.getConfig(servicePck.name);
     Fs.writeFileSync(filePath, JSON.stringify(registryConfig, null, 2));
   } catch(e) {
     if( !e.message.includes('ECONNREFUSED') ) {

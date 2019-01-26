@@ -58,16 +58,15 @@ const getEnv = module.exports.getEnv = () => {
  * options
  *
  * @throws Error if environment is not valid
- * @param environment {String} valid environment
  * @param serviceName {String} name of service set in package.json
  * @returns {Object} Registry Configuration
  */
-const getConfig = async (environment, serviceName) => {
+const getConfig = async (serviceName) => {
 
   let config = {};
   const url = getRegistryUrl();
 
-  config = await Request.get(`${url}/config/${serviceName}`);
+  config = await Request.get(`${url}/_registry/${serviceName}/block`);
   return JSON.parse(config);
 };
 

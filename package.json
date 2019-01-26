@@ -1,6 +1,6 @@
 {
   "name": "ravelo",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Just another framework",
   "main": "index.js",
   "scripts": {
@@ -27,7 +27,6 @@
   },
   "homepage": "https://github.com/opposite-bracket/ravelo#readme",
   "dependencies": {
-    "boom": "^7.3.0",
     "good": "^8.1.2",
     "good-console": "^7.1.0",
     "good-squeeze": "^5.1.0",
@@ -37,6 +36,7 @@
     "request-promise": "^4.2.2"
   },
   "devDependencies": {
+    "boom": "^7.3.0",
     "code": "^5.2.4",
     "codecov": "^3.1.0",
     "eslint": "^5.12.1",

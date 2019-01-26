@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 My motivation for building this project is 
-so that i can build a framework that gives
+so that we can build a framework that gives
 me the ability to split applications into
 multiple independent services.
 
@@ -25,17 +25,25 @@ file to see which version of node it is required.
 
 all you need to do is run `npm i -S ravelo`.
 
-## Build your first service
+### Build your first service (registry service)
 
-All you need to get started (after you install
-`ravelo` as the dependency) is the following on
-your `index.js`:
+To get started, we are going to build a service
+that takes care of centralizing config information
+for all services. And giving you a set of
+functionality to find out the health of your
+architecture.
+
+Once you install `ravelo` as the dependency,
+do as follows in your `index.js`:
 
 ```javascript
 const Ravelo = require('ravelo');
 
 const init = async () => {
-  const server = await Ravelo.init();
+  const server = await Ravelo.init({
+    enableServiceController: true,
+    enableRegistryController: true
+  });
 
   if (require.main === module) {
     console.log(`Ravelo Service: ${server.app.config.name}:${server.app.config.version}`);
@@ -44,7 +52,6 @@ const init = async () => {
   }
 
   return server;
-
 };
 
 module.exports = init();
@@ -61,9 +68,11 @@ Next, create `config/local.json` and add the following:
 {
   "service-name": {
     "service": {
-      "port": 4000,
+      "port": 3000,
       "host": "localhost"
-    }
+    },
+    "debug": { "request": [ "error" ] },
+    "internalURL": "localhost:3000"
   }
 }
 ```
@@ -78,7 +87,7 @@ you set the NODE_ENV environment variable to `local`:
 $ NODE_ENV=local node index.js
 ```
 
-and visit [http://localhost:4000/_service](http://localhost:4000/_service).
+and visit [http://localhost:3000/_service](http://localhost:3000/_service).
 If everything went well, you should be able to see the following:
 
 ```json
@@ -89,6 +98,101 @@ If everything went well, you should be able to see the following:
 }
 ```
 
+
+Now visit [http://localhost:3000/_registry/health](http://localhost:3000/_registry/health).
+If everything went well, you should be able to see the following:
+
+```json
+{
+    "ssms_registry": {
+        "statusCode": 200,
+        "version": "1.0.0",
+        "env": "local"
+    }
+}
+```
+
+### Build your second service (consumer service)
+
+We're calling this a `consumer service`  thinking
+that its purpose is to be used by an application.
+This service will hit the registry service to pull
+the configuration options from the registry before
+running.
+
+The first thing we do is to go back to the registry repo
+and update the `config/local.json` to the following:
+
+```json
+{
+  "service-name": {
+    "service": {
+      "port": 3000,
+      "host": "localhost"
+    },
+    "debug": { "request": [ "error" ] },
+    "internalURL": "localhost:3000"
+  },
+  "consumer-service": {
+    "service": {
+      "port": 3001,
+      "host": "localhost"
+    },
+    "debug": { "request": [ "error" ] },
+    "internalURL": "localhost:3001"
+  }
+}
+```
+
+if you hit [http://localhost:3000/_registry/health](http://localhost:3000/_registry/health)
+you should see the following response:
+
+```json
+{
+  "service-name": {
+    "statusCode": 200,
+    "version": "1.0.0",
+    "env": "local"
+  },
+    "consumer-registry": {
+    "statusCode": 503,
+    "description": "Service not available"
+  }
+}
+```
+
+now we have 2 services registered in the registry service and
+now i want to add my consumer registry. Create a new repo,
+install ravelo as a dependency and add the following to `index.js`:
+
+```javascript
+const Ravelo = require('ravelo');
+
+const init = async () => {
+  const server = await Ravelo.init({
+    enableServiceController: true
+  });
+
+  if (require.main === module) {
+    console.log(`Ravelo Service: ${server.app.config.name}:${server.app.config.version}`);
+    console.log(`Server running at: ${server.info.uri}`);
+    await server.start();
+  }
+
+  return server;
+};
+
+module.exports = init();
+```
+
+The only difference is that we are not enabling registry controllers `enableRegistryController`.
+
 ## Troubleshooting
 
-So far i haven't experienced any but i'm sure something will come up pretty soon.
+So far we haven't experienced any but we're sure something will come up pretty soon.
+
+# Disclaimer
+
+Use this project at your own risk. We do not becom responsible for the security
+of your application should you choose this project. Make sure you know what you
+are doing should you use this in production environments.

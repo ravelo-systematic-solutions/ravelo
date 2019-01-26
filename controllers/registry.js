@@ -77,6 +77,25 @@ const service = {
   }
 };
 
+const serviceConfig = {
+  method: 'GET',
+  path: '/_registry/{serviceName}/block',
+  handler: async (req, h) => {
+
+    const serviceName = req.params.serviceName;
+    const registryConfig = require(config.getConfigPath());
+
+    if ( !(serviceName in registryConfig) ) {
+      return h.response({
+        description: 'Invalid Request'
+      }).code(400);
+    }
+
+    return registryConfig[serviceName];
+  }
+};
+
 module.exports = [
-  service
+  service,
+  serviceConfig
 ];

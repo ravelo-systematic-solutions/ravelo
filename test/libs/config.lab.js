@@ -5,7 +5,7 @@ const Path = require('path');
 const ravelo = require('../../index');
 const Package = require('../../package');
 
-suite('ravelo.config', () => {
+suite('ravelo', () => {
   suite('.getEnv', () => {
 
     test('retrieves production by default', () => {
@@ -118,10 +118,10 @@ suite('ravelo.config', () => {
         };
 
         Nock(url)
-          .get('/config/ssms-service-a')
+          .get('/_registry/ssms-service-a/block')
           .reply(200, context.sampleRegistryConfig);
 
-        context.config = await ravelo.config.getConfig(context.validEnv, 'ssms-service-a');
+        context.config = await ravelo.config.getConfig('ssms-service-a');
       });
 
       test('contains expected options', ({ context }) => {

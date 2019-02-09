@@ -194,7 +194,8 @@ service look exactly the same as the one placed in the
 configuration where each service is meant to do
 different things.
 
-Now start the consuer service by running:
+Now start the consuer service by running the following
+on a new tab:
 
 
 ```jshelllanguage
@@ -221,7 +222,37 @@ following response:
 }
 ```
 
-this means that you now have 2 services running!
+this means that you now have 2 services running however,
+my consumer isn't really doing anything at all so i'm
+going add a simple `hello world` endpoint by adding
+the following after `const server = await Ravelo.init();`:
+
+```javascript
+
+  // ...
+  server.route({
+    method: 'GET',
+    path: '/hello-world',
+    handler: async () => {
+      return {
+        message: 'Hello World'
+      };
+    }
+  });
+  // ...
+```
+
+Remember that the server is a plain [hapijs](https://hapijs.com/) server so what you do with it
+is read its documentation if you are not familiar
+with the framework! anyways, restart the server and
+hit [http://localhost:3002/hello-world](http://localhost:3002/hello-world). If you see the
+following then you are on the right path:
+
+```json
+{
+  "message": "Hello World"
+}
+```
 
 ## Troubleshooting
 

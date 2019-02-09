@@ -1,9 +1,11 @@
 {
-  "name": "service_sample",
+  "name": "registry",
   "version": "1.0.0",
-  "description": "Ravelo Service",
+  "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "start": "node index.js"
+  },
   "author": "Jesus Rodriguez<arturo@ravelo.ca>",
   "license": "MIT",
   "dependencies": {

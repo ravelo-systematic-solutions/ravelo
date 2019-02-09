@@ -1,7 +1,7 @@
 {
   "registry": {
-    "enableServiceController": true,
     "enableRegistryController": true,
+    "enableServiceController": true,
     "service": {
       "port": 3000,
       "host": "localhost"
@@ -10,8 +10,8 @@
     "internalURL": "http://localhost:3000"
   },
   "gateway": {
-    "enableServiceController": true,
     "enableGatewayProxy": true,
+    "enableServiceController": true,
     "service": {
       "port": 3001,
       "host": "localhost"
@@ -21,7 +21,7 @@
   },
   "consumer": {
     "enableServiceController": true,
-    "gatewayUrlPrefix": "/consumer",
+    "enableGatewayAccess": true,
     "service": {
       "port": 3002,
       "host": "localhost"

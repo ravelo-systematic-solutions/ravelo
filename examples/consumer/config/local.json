@@ -1,0 +1,16 @@
+{
+  "consumer": {
+    "enableServiceController": true,
+    "enableGatewayAccess": true,
+    "service": {
+      "port": 3002,
+      "host": "localhost"
+    },
+    "debug": {
+      "request": [
+        "error"
+      ]
+    },
+    "internalURL": "http://localhost:3002"
+  }
+}

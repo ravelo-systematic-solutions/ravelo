@@ -30,8 +30,11 @@
     "good": "^8.1.2",
     "good-console": "^7.1.0",
     "good-squeeze": "^5.1.0",
+    "h2o2": "^8.1.2",
     "hapi": "^18.0.0",
+    "http-proxy": "^1.17.0",
     "joi": "^14.3.1",
+    "jsonwebtoken": "^8.4.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.2"
   },

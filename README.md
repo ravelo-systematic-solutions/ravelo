@@ -40,14 +40,11 @@ do as follows in your `index.js`:
 const Ravelo = require('ravelo');
 
 const init = async () => {
-  const server = await Ravelo.init({
-    enableServiceController: true,
-    enableRegistryController: true
-  });
+  const server = await Ravelo.init();
 
   if (require.main === module) {
-    console.log(`Ravelo Service: ${server.app.config.name}:${server.app.config.version}`);
-    console.log(`Server running at: ${server.info.uri}`);
+    server.log(`Ravelo Service: ${server.app.config.name}:${server.app.config.version}`);
+    server.log(`Server running at: ${server.info.uri}`);
     await server.start();
   }
 
@@ -66,7 +63,9 @@ Next, create `config/local.json` and add the following:
 
 ```json
 {
-  "service-name": {
+  "registry": {
+    "enableServiceController": true,
+    "enableRegistryController": true,
     "service": {
       "port": 3000,
       "host": "localhost"
@@ -77,7 +76,7 @@ Next, create `config/local.json` and add the following:
 }
 ```
 
-Bare in mind that you will need to replace `service-name`
+Bare in mind that you will need to replace `registry`
 with the name you'll find in your `package.json`.
 
 The next thing you need to do is run it but make sure that
@@ -92,19 +91,18 @@ If everything went well, you should be able to see the following:
 
 ```json
 {
-    "name": "service-name",
+    "name": "registry",
     "version": "1.0.0",
     "env": "local"
 }
 ```
-
 
 Now visit [http://localhost:3000/_registry/health](http://localhost:3000/_registry/health).
 If everything went well, you should be able to see the following:
 
 ```json
 {
-    "ssms_registry": {
+    "registry": {
         "statusCode": 200,
         "version": "1.0.0",
         "env": "local"
@@ -115,17 +113,19 @@ If everything went well, you should be able to see the following:
 ### Build your second service (consumer service)
 
 We're calling this a `consumer service`  thinking
-that its purpose is to be used by an application.
-This service will hit the registry service to pull
-the configuration options from the registry before
-running.
+that its purpose is to be used by an application
+through a set of APIs. This service will hit the
+registry service to pull the configuration options
+from the registry before running.
 
 The first thing we do is to go back to the registry repo
 and update the `config/local.json` to the following:
 
 ```json
 {
-  "service-name": {
+  "registry": {
+    "enableServiceController": true,
+    "enableRegistryController": true,
     "service": {
       "port": 3000,
       "host": "localhost"
@@ -133,13 +133,17 @@ and update the `config/local.json` to the following:
     "debug": { "request": [ "error" ] },
     "internalURL": "http://localhost:3000"
   },
-  "consumer-service": {
+  "consumer": {
+    "enableServiceController": true,
+    "enableGatewayAccess": true,
     "service": {
-      "port": 3001,
+      "port": 3002,
       "host": "localhost"
     },
-    "debug": { "request": [ "error" ] },
-    "internalURL": "http://localhost:3001"
+    "debug": {
+      "request": [ "error" ]
+    },
+    "internalURL": "http://localhost:3002"
   }
 }
 ```
@@ -149,12 +153,12 @@ you should see the following response:
 
 ```json
 {
-  "service-name": {
+  "registry": {
     "statusCode": 200,
     "version": "1.0.0",
     "env": "local"
   },
-    "consumer-registry": {
+    "consumer": {
     "statusCode": 503,
     "description": "Service not available"
   }
@@ -169,13 +173,11 @@ install ravelo as a dependency and add the following to `index.js`:
 const Ravelo = require('ravelo');
 
 const init = async () => {
-  const server = await Ravelo.init({
-    enableServiceController: true
-  });
+  const server = await Ravelo.init();
 
   if (require.main === module) {
-    console.log(`Ravelo Service: ${server.app.config.name}:${server.app.config.version}`);
-    console.log(`Server running at: ${server.info.uri}`);
+    server.log(`Ravelo Service: ${server.app.config.name}:${server.app.config.version}`);
+    server.log(`Server running at: ${server.info.uri}`);
     await server.start();
   }
 
@@ -185,7 +187,41 @@ const init = async () => {
 module.exports = init();
 ```
 
-The only difference is that we are not enabling registry controllers `enableRegistryController`.
+You can see that this snippet of code
+looks exactly to the `index.js` file in the `registry`
+service look exactly the same as the one placed in the
+`consumer` service. Its behaviour comes from the
+configuration where each service is meant to do
+different things.
+
+Now start the consuer service by running:
+
+
+```jshelllanguage
+$ NODE_ENV=local node index.js
+```
+
+.. if you hit [http://localhost:3000/_registry/health](http://localhost:3000/_registry/health) (which is
+the registry health endpoint), you should see the
+following response:
+
+```json
+{
+  "registry": {
+    "statusCode": 200,
+    "version": "1.0.0",
+    "env": "local"
+  },
+  "consumer": {
+    "statusCode": 200,
+    "name": "consumer",
+    "version": "1.0.0",
+    "env": "local"
+  }
+}
+```
+
+this means that you now have 2 services running!
 
 ## Troubleshooting
 

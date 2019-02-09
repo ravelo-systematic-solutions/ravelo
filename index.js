@@ -7,11 +7,6 @@ const Registry = require('./controllers/registry');
 
 const init = async (options = {}) => {
 
-  const settings = Object.assign({
-    enableServiceController: false,
-    enableRegistryController: false
-  }, options);
-
   let registryConfig, serviceConfig;
   const env = config.getEnv();
   const filePath = config.getConfigPath();
@@ -34,6 +29,13 @@ const init = async (options = {}) => {
     console.log('Error: You need to configure either the config file or the registry service.');
     process.exit(1);
   }
+
+  const settings = Object.assign({
+    enableServiceController: false,
+    enableRegistryController: false,
+    enableGatewayProxy: false,
+    enableGatewayAccess: false
+  }, registryConfig[servicePck.name], options);
 
   if ( !(servicePck.name in registryConfig) ) {
     // eslint-disable-next-line no-console
@@ -65,7 +67,7 @@ const init = async (options = {}) => {
     server.route(Registry);
   }
 
-  await Plugins(server);
+  await Plugins(server, settings, registryConfig);
 
   return server;
 };

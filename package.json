@@ -1,6 +1,6 @@
 {
   "name": "ravelo",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Just another framework",
   "main": "index.js",
   "scripts": {

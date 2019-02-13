@@ -1,7 +1,6 @@
 const Good = require('good');
-const H2o2 = require('h2o2');
 
-module.exports = async (server, settings) => {
+module.exports = async (server) => {
 
   server.log(['info'], 'Loading good config');
   await server.register({
@@ -25,33 +24,4 @@ module.exports = async (server, settings) => {
     }
   });
 
-  if (settings.enableGatewayProxy) {
-    await server.register({
-      plugin: H2o2
-    });
-
-    for ( const block in settings ) {
-      if (block.enableGatewayAccess) {
-        const gatewayUrlPrefix = block.gatewayUrlPrefix;
-        const protocol = block.intenalURL.split('://')[0];
-        const port = block.service.port;
-        const host = block.service.host;
-        server.route([
-          {
-            method: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-            path: `${gatewayUrlPrefix}/*`,
-            handler: {
-              proxy: {
-                host: host,
-                port: port,
-                protocol: protocol,
-                passThrough: true,
-                xforward: true
-              }
-            }
-          }
-        ]);
-      }
-    }
-  }
 };

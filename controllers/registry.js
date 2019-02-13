@@ -77,6 +77,23 @@ const service = {
   }
 };
 
+const getServiceMapping = (registryConfig) => {
+  const serviceMapping = [];
+
+  for(const serviceName in registryConfig) {
+    const block = registryConfig[serviceName];
+    if (block.enableGatewayAccess) {
+      serviceMapping.push({
+        port: block.service.port,
+        host: block.service.host,
+        gatewayPrefix: block.gatewayPrefix || serviceName
+      });
+    }
+  }
+
+  return serviceMapping;
+};
+
 const serviceConfig = {
   method: 'GET',
   path: '/_registry/{serviceName}/block',
@@ -91,7 +108,10 @@ const serviceConfig = {
       }).code(400);
     }
 
-    return registryConfig[serviceName];
+    return {
+      ...registryConfig[serviceName],
+      serviceMapping: getServiceMapping(registryConfig)
+    };
   }
 };
 

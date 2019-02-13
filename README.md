@@ -119,7 +119,9 @@ registry service to pull the configuration options
 from the registry before running.
 
 The first thing we do is to go back to the registry repo
-and update the `config/local.json` to the following:
+and update the `config/local.json` to the following
+and restart the `registry` service for the configuration
+changes to take effect system wide:
 
 ```json
 {
@@ -245,7 +247,7 @@ the following after `const server = await Ravelo.init();`:
 Remember that the server is a plain [hapijs](https://hapijs.com/) server so what you do with it
 is read its documentation if you are not familiar
 with the framework! anyways, restart the server and
-hit [http://localhost:3002/hello-world](http://localhost:3002/hello-world). If you see the
+hit [http://localhost:3001/hello-world](http://localhost:3001/hello-world). If you see the
 following then you are on the right path:
 
 ```json
@@ -253,6 +255,117 @@ following then you are on the right path:
   "message": "Hello World"
 }
 ```
+
+### Build your third service (gateway service)
+
+The next thing you may want to do is to implement
+a way to protect your endpoints behind a gateway.
+Say your gateway is in a public subnet and the rest
+of your services leave within a private subnet SO,
+the next thing is to build a gateway service.
+
+Lets update the `config/local.json` to the following:
+
+```json
+{
+  "registry": {
+    "enableRegistryController": true,
+    "enableServiceController": true,
+    "service": {
+      "port": 3000,
+      "host": "localhost"
+    },
+    "debug": { "request": [ "error" ] },
+    "internalURL": "http://localhost:3000"
+  },
+  "consumer": {
+    "enableServiceController": true,
+    "enableGatewayAccess": true,
+    "service": {
+      "port": 3001,
+      "host": "localhost"
+    },
+    "debug": { "request": [ "error" ] },
+    "internalURL": "http://localhost:3001"
+  },
+  "gateway": {
+    "enableGatewayProxy": true,
+    "enableServiceController": true,
+    "service": {
+      "port": 3002,
+      "host": "localhost"
+    },
+    "debug": { "request": [ "error" ] },
+    "internalURL": "http://localhost:3002"
+  }
+}
+```
+
+NOTE: Don't forget that since you are adding new
+config options, you need to restart the `registry`
+service. The consumer service does not need to be
+restarted at the moment, because we don't need
+the consumer to communicate to the gateway service
+**AND** the consumer service isn't affected by the
+changes made in the registry service at the moment.
+
+Now we do the same we've been doing for the other
+services which is install `ravelo` as a dependency
+and create that `index.js` with the same content:
+
+```javascript
+const Ravelo = require('ravelo');
+
+const init = async () => {
+  const server = await Ravelo.init();
+
+  if (require.main === module) {
+    server.log(`Ravelo Service: ${server.app.config.name}:${server.app.config.version}`);
+    server.log(`Server running at: ${server.info.uri}`);
+    await server.start();
+  }
+
+  return server;
+};
+
+module.exports = init();
+```
+
+and start the `gateway` service by running:
+
+```jshelllanguage
+$ NODE_ENV=local node index.js
+```
+
+then hit [http://localhost:3000/_registry/health](http://localhost:3000/_registry/health):
+
+```json
+{
+  "registry": {
+    "statusCode": 200,
+    "version": "1.0.0",
+    "env": "local"
+  },
+  "consumer": {
+    "statusCode": 200,
+    "name": "consumer",
+    "version": "1.0.0",
+    "env": "local"
+  },
+  "gateway": {
+    "statusCode": 200,
+    "name": "gateway",
+    "version": "1.0.0",
+    "env": "local"
+  }
+}
+```
+
+Now when hit the consumer API through the gateway
+[http://localhost:3002/consumer/hello-world](http://localhost:3002/consumer/hello-world)
+you should see the same as if you were hitting
+the consumer api itself
+[http://localhost:3001/hello-world](http://localhost:3001/hello-world)
 
 ## Troubleshooting
 

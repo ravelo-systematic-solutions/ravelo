@@ -3,7 +3,7 @@
     "enableGatewayProxy": true,
     "enableServiceController": true,
     "service": {
-      "port": 3001,
+      "port": 3002,
       "host": "localhost"
     },
     "debug": {
@@ -11,6 +11,13 @@
         "error"
       ]
     },
-    "internalURL": "http://localhost:3001"
+    "internalURL": "http://localhost:3002",
+    "serviceMapping": [
+      {
+        "port": 3001,
+        "host": "localhost",
+        "gatewayPrefix": "consumer"
+      }
+    ]
   }
 }

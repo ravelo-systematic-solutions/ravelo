@@ -4,6 +4,7 @@ const config = require('./libs/config');
 const Plugins = require('./plugins');
 const Service = require('./controllers/service');
 const Registry = require('./controllers/registry');
+const Gateway = require('./controllers/gateway');
 
 const init = async (options = {}) => {
 
@@ -67,7 +68,12 @@ const init = async (options = {}) => {
     server.route(Registry);
   }
 
-  await Plugins(server, settings, registryConfig);
+  if(settings.enableGatewayProxy) {
+    // register gateway services
+    Gateway(server, settings);
+  }
+
+  await Plugins(server);
 
   return server;
 };

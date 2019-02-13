@@ -43,7 +43,7 @@ suite('Registry Controller Actions', () => {
       });
     });
 
-    suite('upon failure', () => {
+    suite.only('upon failure', () => {
       test('does not break if a service is not running as expected', async () => {
         const response = await Server.inject('/_registry/health');
         const body = JSON.parse(response.payload || {});

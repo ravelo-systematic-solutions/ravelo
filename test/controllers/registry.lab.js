@@ -43,17 +43,18 @@ suite('Registry Controller Actions', () => {
       });
     });
 
-    suite.only('upon failure', () => {
+    suite('upon failure', () => {
       test('does not break if a service is not running as expected', async () => {
         const response = await Server.inject('/_registry/health');
         const body = JSON.parse(response.payload || {});
+
         expect(response.statusCode).to.equal(200);
-        expect(body['service-a'].statusCode).to.equal(503);
+        expect(body['consumer'].statusCode).to.equal(503);
       });
 
       test('shows an error message', async () => {
         const msg = 'something went wrong';
-        Nock(TestRegistrConfig['service-a'].internalURL)
+        Nock(TestRegistrConfig['consumer'].internalURL)
           .get('/_service')
           .reply(500, {
             description: msg
@@ -61,8 +62,8 @@ suite('Registry Controller Actions', () => {
         const response = await Server.inject('/_registry/health');
         const body = JSON.parse(response.payload || {});
         expect(response.statusCode).to.equal(200);
-        expect(body['service-a'].statusCode).to.equal(500);
-        expect(body['service-a'].description).to.equal(msg);
+        expect(body['consumer'].statusCode).to.equal(500);
+        expect(body['consumer'].description).to.equal(msg);
       });
     });
   });
@@ -71,7 +72,7 @@ suite('Registry Controller Actions', () => {
     suite('upon successful request', () => {
       before( async ({ context }) => {
 
-        context.response = await Server.inject('/_registry/service-a/block');
+        context.response = await Server.inject('/_registry/consumer/block');
         context.payload = JSON.parse(context.response.payload || {});
       });
 
@@ -80,7 +81,7 @@ suite('Registry Controller Actions', () => {
       });
 
       test('returns the service\'s config block', async ({ context }) => {
-        expect(context.payload).to.equal(TestRegistrConfig['service-a']);
+        expect(context.payload).to.equal(TestRegistrConfig['consumer']);
       });
     });
 

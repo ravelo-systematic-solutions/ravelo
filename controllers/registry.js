@@ -101,6 +101,7 @@ const serviceConfig = {
 
     const serviceName = req.params.serviceName;
     const registryConfig = require(config.getConfigPath());
+    let configBlock = {};
 
     if ( !(serviceName in registryConfig) ) {
       return h.response({
@@ -108,10 +109,16 @@ const serviceConfig = {
       }).code(400);
     }
 
-    return {
-      ...registryConfig[serviceName],
-      serviceMapping: getServiceMapping(registryConfig)
-    };
+    configBlock = Object.assign(
+      {},
+      registryConfig[serviceName]
+    );
+
+    if( configBlock.enableGatewayProxy ) {
+      config.serviceMapping = getServiceMapping(registryConfig);
+    }
+
+    return configBlock;
   }
 };
 

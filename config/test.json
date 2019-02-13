@@ -7,7 +7,14 @@
       "host": "localhost"
     },
     "debug": { "request": [ "error" ] },
-    "internalURL": "http://localhost:3000"
+    "internalURL": "http://localhost:3000",
+    "serviceMapping": [
+      {
+        "gatewayPrefix": "consumer",
+        "port": 3002,
+        "host": "localhost"
+      }
+    ]
   },
   "gateway": {
     "enableServiceController": true,
@@ -21,7 +28,7 @@
   },
   "consumer": {
     "enableServiceController": true,
-    "gatewayUrlPrefix": "/consumer",
+    "gatewayPrefix": "/consumer",
     "service": {
       "port": 3002,
       "host": "localhost"

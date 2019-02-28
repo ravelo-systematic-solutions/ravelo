@@ -103,7 +103,9 @@ workflows:
             - install_dependencies
       - publish:
           requires:
-            - test
+            - run_audit_tests
+            - run_unit_tests
+            - run_coverage
           filters:
             branches:
               only: master

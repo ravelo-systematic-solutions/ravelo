@@ -2,3 +2,4 @@ examples
 test
 .npmrc
 coverage
+.circleci

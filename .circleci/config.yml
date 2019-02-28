@@ -72,6 +72,17 @@ jobs:
       - run:
           name: Run unit tests
           command: npm run codecov
+  publish:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: Authenticate with registry
+          command: echo "//registry.npmjs.org/:_authToken=$npm_TOKEN" > ~/repo/.npmrc a2aa063b-27ce-4302-870f-0d6b4f5e7580
+      - run:
+          name: Publish package
+          command: npm publish
 
 workflows:
   version: 2
@@ -90,3 +101,9 @@ workflows:
       - run_coverage:
           requires:
             - install_dependencies
+      - publish:
+          requires:
+            - test
+          filters:
+            branches:
+              only: master

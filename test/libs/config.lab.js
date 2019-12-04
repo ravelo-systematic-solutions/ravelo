@@ -1,5 +1,5 @@
 const { expect } = require('code');
-const {  suite, test, before } = exports.lab = require('lab').script();
+const { suite, test, before } = exports.lab = require('lab').script();
 const Nock = require('nock');
 const Path = require('path');
 const ravelo = require('../../index');
